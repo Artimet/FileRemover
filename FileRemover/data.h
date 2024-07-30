@@ -7,6 +7,7 @@ struct FileData {
 	std::string path;
 	std::string mask;
 	std::string age;
+	unsigned long long ullAge;
 };
 
 class Parser {
