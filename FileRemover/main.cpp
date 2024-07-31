@@ -8,6 +8,8 @@
 #include <chrono>
 #include <sstream>
 #include "_tinyxml2.h"
+
+
 extern unsigned int FREQ;
 
 unsigned long long GetFileAgeMs(WIN32_FIND_DATA& ffd) {
@@ -29,35 +31,37 @@ unsigned long long GetFileAgeMs(WIN32_FIND_DATA& ffd) {
 
 int RemoveByPath(std::wstring& ws_path, FileData& removeInfo)
 {
-	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251);
 	int dcounter = 0;
 	int fcounter = 0;
 	WIN32_FIND_DATA ffd;
 	LPCWSTR lpcws_path = ws_path.c_str();
-	//עוסע
-	std::stringstream ss;
-	ss << "C:\\Parser\\configParser\\configParser\\*.bmp";
-	std::string str;
-	std::getline(ss, str);
-	std::wstring ws = std::wstring(str.begin(), str.end());
-	lpcws_path = ws.c_str();
-	removeInfo.ullAge = 15;
-	//
 	HANDLE hFind;
 	hFind = FindFirstFile(lpcws_path, &ffd);
 	if (hFind != INVALID_HANDLE_VALUE) {
 		do {
 			fcounter++;
 			std::wstring fileNameCopy = ffd.cFileName;
-			std::string fileNameStr = std::string(fileNameCopy.begin(), fileNameCopy.end());
+			std::wstring path_ws = std::wstring(removeInfo.path.begin(), removeInfo.path.end());
+
+			std::wstring ws_path = path_ws + ffd.cFileName;
 			unsigned long long fileAge = GetFileAgeMs(ffd);
-			std::cout << "װאיכ: " << fileNameStr << "\tגמחנאסע: " << fileAge;
-			if (fileAge > removeInfo.ullAge)
-				if (DeleteFile(ffd.cFileName)) {
+			std::wcout << "װאיכ: " << ws_path << "\tגמחנאסע: " << fileAge;
+			if (fileAge > removeInfo.ullAge) {
+				if (DeleteFile(ws_path.c_str())) {
 					std::wcout << " deleted" << std::endl;
 					dcounter++;
 				}
+				else if (RemoveDirectory(ws_path.c_str()))
+				{
+					std::wcout << " deleted" << std::endl;
+					dcounter++;
+				}
+				else
+				{
+					std::cout << std::endl << GetLastError() << std::endl;
+					int a = 0;
+				}
+			}
 			std::cout << std::endl;
 		} while (FindNextFile(hFind, &ffd) != 0);
 	}
@@ -72,14 +76,36 @@ void FileRemover() {
 
 	while (true)
 	{
+		unsigned long PERIOD = 10000;
 		Parser removerConfig;
-		removerConfig.ReadFile("configData.ini");
-		
-		auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(FREQ);
+		removerConfig.filesData.clear();
+		tinyxml2::XMLDocument xml_doc;
+		tinyxml2::XMLElement* rootElement, * periodElement, * directoryElement;
+		rootElement = periodElement = directoryElement = nullptr;
+		tinyxml2::XMLError eResult = xml_doc.LoadFile("removeInfo.xml");
+		if (eResult == tinyxml2::XML_SUCCESS) {
+			rootElement = xml_doc.RootElement();
+			if (rootElement) periodElement = xml_doc.RootElement()->FirstChildElement();
+			if (periodElement != nullptr) {
+				PERIOD = std::stoul(periodElement->Attribute("period"));
+				directoryElement = periodElement->FirstChildElement();
+			}
+
+			for (auto curDirElement = directoryElement; curDirElement; curDirElement = curDirElement->NextSiblingElement())
+			{
+				FileData fd;
+				fd.path = curDirElement->Attribute("path");
+				fd.mask = curDirElement->Attribute("mask");
+				fd.ullAge = std::stoull(curDirElement->Attribute("age"));
+				removerConfig.filesData.push_back(fd);
+			}
+		}
+
+		auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(PERIOD);
 		for (auto& curFileRemoveInfo : removerConfig.filesData)
 		{
-			curFileRemoveInfo.path += curFileRemoveInfo.mask;
-			std::wstring ws_path = std::wstring(curFileRemoveInfo.path.begin(), curFileRemoveInfo.path.end());
+			std::string path_copy = curFileRemoveInfo.path + curFileRemoveInfo.mask;
+			std::wstring ws_path = std::wstring(path_copy.begin(), path_copy.end());
 			RemoveByPath(ws_path, curFileRemoveInfo);
 		}
 		std::this_thread::sleep_until(x);
@@ -88,6 +114,8 @@ void FileRemover() {
 
 int main()
 {
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 	std::thread PeriodicTask(FileRemover);
 	PeriodicTask.detach();
 
