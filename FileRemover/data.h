@@ -2,16 +2,11 @@
 #include <vector>
 #include <string>
 
-extern unsigned int FREQ;
-struct FileData {
+extern unsigned int PERIOD;
+
+struct DirectoryInfo {
 	std::string path;
 	std::string mask;
-	std::string age;
 	unsigned long long ullAge;
 };
 
-class Parser {
-public:
-	void ReadFile(const char* fileName);
-	std::vector<FileData> filesData;
-};
