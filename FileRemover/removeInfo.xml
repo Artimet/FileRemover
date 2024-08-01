@@ -2,7 +2,7 @@
 <configFile>
 	<removeDirectories	period = "1000">
 	
-		<directory	path = ".\test"	mask = "*.*"	age = "30"/>
+		<directory	path = ".\test"	mask = "*.*"	age = "-1"/>
 		
 	</removeDirectories>
 </configFile>
