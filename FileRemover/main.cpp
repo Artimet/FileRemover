@@ -48,7 +48,7 @@ int RemoveByParam(DirectoryInfo& dirData)
 	WIN32_FIND_DATA ffd;
 	HANDLE hFind;
 
-	std::cout << "\nÄèðåêòîðèÿ: " << dirData.path << ":\n";
+	std::cout << "\nÐ”Ð¸Ñ€ÐµÐºÑ‚Ð¾Ñ€Ð¸Ñ: " << dirData.path << ":\n";
 	hFind = FindFirstFile(wsPathWithMask.c_str(), &ffd);
 	if (hFind != INVALID_HANDLE_VALUE) {
 		do {
@@ -57,7 +57,7 @@ int RemoveByParam(DirectoryInfo& dirData)
 			unsigned long long fileAge = GetFileAgeMs(ffd);
 
 			if (GetFileAttributes(wwFullPath.c_str()) == FILE_ATTRIBUTE_DIRECTORY) {
-				std::wcout << "Íàéäåíà ïàïêà: " << wwFullPath << "\tâîçðàñò: " << fileAge;
+				std::wcout << "ÐÐ°Ð¹Ð´ÐµÐ½Ð° Ð¿Ð°Ð¿ÐºÐ°: " << wwFullPath << "\tÐ²Ð¾Ð·Ñ€Ð°ÑÑ‚: " << fileAge;
 				const WCHAR* dot = L".", * ddot = L"..";
 				if (fileAge > dirData.ullAge && wcscmp(ffd.cFileName, dot) && wcscmp(ffd.cFileName, ddot)) {
 					if (RemoveDirectory(wwFullPath.c_str())) {
@@ -70,7 +70,7 @@ int RemoveByParam(DirectoryInfo& dirData)
 				std::cout << std::endl;
 			}
 			else {
-				std::wcout << "Íàéäåí ôàéë: " << wwFullPath << "\tâîçðàñò: " << fileAge;
+				std::wcout << "ÐÐ°Ð¹Ð´ÐµÐ½ Ñ„Ð°Ð¹Ð»: " << wwFullPath << "\tÐ²Ð¾Ð·Ñ€Ð°ÑÑ‚: " << fileAge;
 				if (fileAge > dirData.ullAge) {
 					if (DeleteFile(wwFullPath.c_str())) {
 						std::wcout << "\tdeleted";
@@ -84,8 +84,8 @@ int RemoveByParam(DirectoryInfo& dirData)
 		} while (FindNextFile(hFind, &ffd) != 0);
 	}
 
-	std::cout << "\nÔàéëîâ íéäåíî: " << findCounter << std::endl;
-	std::cout << "Ôàéëîâ óäàëåíî: " << deleteCounter << std::endl << std::endl;
+	std::cout << "\nÐ¤Ð°Ð¹Ð»Ð¾Ð² Ð½Ð¹Ð´ÐµÐ½Ð¾: " << findCounter << std::endl;
+	std::cout << "Ð¤Ð°Ð¹Ð»Ð¾Ð² ÑƒÐ´Ð°Ð»ÐµÐ½Ð¾: " << deleteCounter << std::endl << std::endl;
 	return deleteCounter;
 }
 

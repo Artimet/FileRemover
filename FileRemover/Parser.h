@@ -2,12 +2,12 @@
 #include "data.h"
 #include "_tinyxml2.h"
 
-//Функция переходит в файл конфигураци fileName для считывании данных и записи их в вектор структур FileData
+//Р¤СѓРЅРєС†РёСЏ РїРµСЂРµС…РѕРґРёС‚ РІ С„Р°Р№Р» РєРѕРЅС„РёРіСѓСЂР°С†Рё fileName РґР»СЏ СЃС‡РёС‚С‹РІР°РЅРёРё РґР°РЅРЅС‹С… Рё Р·Р°РїРёСЃРё РёС… РІ РІРµРєС‚РѕСЂ СЃС‚СЂСѓРєС‚СѓСЂ FileData
 void ReadXmlData(const char* fileName, std::vector<DirectoryInfo>& configData);
 
-//Функция переходит к первому некорневому элементу указанного xml файла 
+//Р¤СѓРЅРєС†РёСЏ РїРµСЂРµС…РѕРґРёС‚ Рє РїРµСЂРІРѕРјСѓ РЅРµРєРѕСЂРЅРµРІРѕРјСѓ СЌР»РµРјРµРЅС‚Сѓ СѓРєР°Р·Р°РЅРЅРѕРіРѕ xml С„Р°Р№Р»Р° 
 const tinyxml2::XMLElement* GoToFirstElem(const tinyxml2::XMLDocument& xml_doc);
 
-//Функция считывает параметры для удаления и записывает их в fileData
+//Р¤СѓРЅРєС†РёСЏ СЃС‡РёС‚С‹РІР°РµС‚ РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ СѓРґР°Р»РµРЅРёСЏ Рё Р·Р°РїРёСЃС‹РІР°РµС‚ РёС… РІ fileData
 int fileDataByXmlElement(const tinyxml2::XMLElement* xmlElement, DirectoryInfo& fileData);
 

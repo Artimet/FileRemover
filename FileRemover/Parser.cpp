@@ -8,18 +8,18 @@ const tinyxml2::XMLElement* GoToFirstElem(const tinyxml2::XMLDocument& xml_doc)
 	rootElement = xml_doc.RootElement();
 	if (!rootElement)
 	{
-		std::cout << "\nÎøèáêà â ñòðóêòóðå ôàéëà íå íàéäåí êîðíåâîé ýëåìåíò\n";
+		std::cout << "\nÐžÑˆÐ¸Ð±ÐºÐ° Ð² ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ðµ Ñ„Ð°Ð¹Ð»Ð° Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½ ÐºÐ¾Ñ€Ð½ÐµÐ²Ð¾Ð¹ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚\n";
 		return nullptr;
 	}
 	ParentElement = xml_doc.RootElement()->FirstChildElement();
 
 	if (!ParentElement) {
-		std::cout << "\nÎøèáêà â ñòðóêòóðå ôàéëà íå íàéäåí êîðíåâîé ýëåìåíò\n";
+		std::cout << "\nÐžÑˆÐ¸Ð±ÐºÐ° Ð² ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ðµ Ñ„Ð°Ð¹Ð»Ð° Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½ ÐºÐ¾Ñ€Ð½ÐµÐ²Ð¾Ð¹ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚\n";
 		return nullptr;
 	}
 
 	if (!ParentElement->UnsignedAttribute("period")) {
-		std::cout << "\nÎòñóòñòâóåò ïåðèîä èëè ïåðèîä ðàâåí 0\n";
+		std::cout << "\nÐžÑ‚ÑÑƒÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚ Ð¿ÐµÑ€Ð¸Ð¾Ð´ Ð¸Ð»Ð¸ Ð¿ÐµÑ€Ð¸Ð¾Ð´ Ñ€Ð°Ð²ÐµÐ½ 0\n";
 		return nullptr;
 	}
 
@@ -31,13 +31,13 @@ int fileDataByXmlElement(const tinyxml2::XMLElement* xmlElement, DirectoryInfo& 
 {
 	if (!xmlElement->Attribute("path"))
 	{
-		std::cout << "\nÀòðèáóò path íå áûë íàéäåí\n";
+		std::cout << "\nÐÑ‚Ñ€Ð¸Ð±ÑƒÑ‚ path Ð½Ðµ Ð±Ñ‹Ð» Ð½Ð°Ð¹Ð´ÐµÐ½\n";
 		return 0;
 	}
 	fileData.path = xmlElement->Attribute("path");
 	if (!xmlElement->Attribute("mask"))
 	{
-		std::cout << "\nÀòðèáóò mask íå áûë íàéäåí\n";
+		std::cout << "\nÐÑ‚Ñ€Ð¸Ð±ÑƒÑ‚ mask Ð½Ðµ Ð±Ñ‹Ð» Ð½Ð°Ð¹Ð´ÐµÐ½\n";
 		return 0;
 	}
 	fileData.mask = xmlElement->Attribute("mask");
@@ -51,13 +51,13 @@ void ReadXmlData(const char* fileName, std::vector<DirectoryInfo>& configData)
 	tinyxml2::XMLError eResult = config_xml_doc.LoadFile(fileName);
 
 	if (eResult != tinyxml2::XML_SUCCESS) {
-		std::cout << "\nXmlFile " << fileName << " íå áûë çàãðóæåí\n";
+		std::cout << "\nXmlFile " << fileName << " Ð½Ðµ Ð±Ñ‹Ð» Ð·Ð°Ð³Ñ€ÑƒÐ¶ÐµÐ½\n";
 		return;
 	}
 
 	const tinyxml2::XMLElement* firstDirElement = GoToFirstElem(config_xml_doc);
 	if (!firstDirElement) {
-		std::cout << "\nÎøèáêà â ñòðóêòóðå ôàéëà íå íàéäåíà èíôîðìàöèÿ î äèðåêòîðèÿõ\n";
+		std::cout << "\nÐžÑˆÐ¸Ð±ÐºÐ° Ð² ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ðµ Ñ„Ð°Ð¹Ð»Ð° Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð° Ð¸Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ Ð¾ Ð´Ð¸Ñ€ÐµÐºÑ‚Ð¾Ñ€Ð¸ÑÑ…\n";
 		return;
 	}
 
