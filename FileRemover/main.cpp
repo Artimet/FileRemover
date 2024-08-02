@@ -10,7 +10,7 @@ void Deleter() {
 	while (true)
 	{
 		std::vector<DirectoryData> configData;
-		ReadXmlData("removeInfo.xml", configData);
+		ReadXmlData("config.xml", configData);
 		auto nextResponseTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(PERIOD);
 		for (auto& curDirData : configData)
 			FindAndDeleteFilesByDirData(curDirData);
