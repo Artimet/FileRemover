@@ -1,7 +1,8 @@
 #include "FilesData.h"
 #include <iostream>
+#include <atlbase.h>
 
-unsigned int PERIOD = 1000;
+unsigned int PERIOD = 5000;
 
 unsigned long long GetFileAgeMs(WIN32_FIND_DATA& fileData) {
 	FILETIME ft = fileData.ftLastWriteTime;
@@ -19,17 +20,20 @@ unsigned long long GetFileAgeMs(WIN32_FIND_DATA& fileData) {
 	return static_cast<unsigned long long>(diff.QuadPart);
 }
 
+
 std::wstring getPathWithMask(const std::string& path, const std::string& mask) {
 	std::string pathWithMask = path + "\\" + mask;
-	std::wstring wsPathWithMask = std::wstring(pathWithMask.begin(), pathWithMask.end());
-	return wsPathWithMask;
+	USES_CONVERSION;
+	const wchar_t* wchPathWithMask = A2CW(pathWithMask.c_str());
+	return wchPathWithMask;
 }
 
 std::wstring getFullPathByName(const std::string& path, const WIN32_FIND_DATA& fileData) {
 	std::string pathCopy = path + "\\";
+	USES_CONVERSION;
+	const wchar_t* wchPathCopy = A2CW(pathCopy.c_str());
 	std::wstring fileNameCopy = fileData.cFileName;
-	std::wstring wsPath = std::wstring(pathCopy.begin(), pathCopy.end());
-	std::wstring wsFullPath = wsPath + fileData.cFileName;
+	std::wstring wsFullPath = std::wstring(wchPathCopy) + fileData.cFileName;
 	return wsFullPath;
 }
 
