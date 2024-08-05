@@ -12,8 +12,11 @@ void Deleter() {
 		std::vector<DirectoryData> configData;
 		ReadXmlData("config.xml", configData);
 		auto nextResponseTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(PERIOD);
-		for (auto& curDirData : configData)
-			FindAndDeleteFilesByDirData(curDirData);
+		for (auto& curDirData : configData) {
+			std::wstring path = std::wstring(curDirData.path.begin(), curDirData.path.end());
+			std::wstring mask = std::wstring(curDirData.mask.begin(), curDirData.mask.end());
+			findDirRecursive(path, mask, curDirData);
+		}
 		std::this_thread::sleep_until(nextResponseTime);
 	}
 }

@@ -55,22 +55,74 @@ int DeleteFileLocal(const std::wstring& path) {
 	return 0;
 }
 
-int FindAndDeleteFilesByDirData(const DirectoryData& dirData)
+std::wstring findDirRecursive(const std::wstring& path, const std::wstring& mask, const  DirectoryData& dirData)
 {
-	unsigned int deleteCounter = 0, findCounter = 0;
-	std::wstring wsPathWithMask = getPathWithMask(dirData.path, dirData.mask);
+	std::wstring pathCopy = path;
+	std::wstring::size_type pos = path.find_first_of('*');
+	if (pos == std::string::npos) {
+		scanCurDir(path, mask, dirData);
+		return path;
+	}
+	std::wstring::size_type lastSlashPos = path.find_last_of('\\', pos);
+	std::wstring::size_type nextSlashPos = path.find_first_of('\\', pos);
+
+	std::wstring trimedPath = path;
+	std::wstring trimedPathMask = path;
+	std::wstring remainingPath = L"";
+	if (nextSlashPos == std::string::npos)
+		nextSlashPos = path.size();
+	else
+		remainingPath = std::wstring(path.begin() + nextSlashPos, path.end());
+
+	if (lastSlashPos != std::string::npos)
+		trimedPath = std::wstring(path.begin(), path.begin() + lastSlashPos);
+	trimedPathMask = std::wstring(path.begin(), path.begin() + nextSlashPos);
+
+
+	std::wcout << L"\nПуть содержит маску:";
+	std::wcout << std::endl << trimedPathMask << std::endl;
+
 	WIN32_FIND_DATA ffd;
 	HANDLE hFind;
 
-	std::wcout << L"\nПоиск: " << wsPathWithMask << ":\n";
+	hFind = FindFirstFile(trimedPathMask.c_str(), &ffd);
+	if (hFind != INVALID_HANDLE_VALUE) {
+		do {
+			if (!wcscmp(ffd.cFileName, L".") || !wcscmp(ffd.cFileName, L".."))
+				continue;
 
-	hFind = FindFirstFile(wsPathWithMask.c_str(), &ffd);
+			std::wstring wsFullPath = trimedPath + L"\\" + ffd.cFileName;
+			unsigned long long fileAge = GetFileAgeMs(ffd);
+			bool isFolder = GetFileAttributes(wsFullPath.c_str()) == FILE_ATTRIBUTE_DIRECTORY;
+
+			if (isFolder) {
+				std::wcout << L"Переход в директорию: " << ffd.cFileName << std::endl;
+				pathCopy = findDirRecursive(wsFullPath + remainingPath, mask, dirData);
+				scanCurDir(pathCopy, mask, dirData);
+			}
+
+
+		} while (FindNextFile(hFind, &ffd) != 0);
+	}
+	return path;
+}
+
+int scanCurDir(const std::wstring& path, const std::wstring& mask, const  DirectoryData& dirData)
+{
+	unsigned int deleteCounter = 0, findCounter = 0;
+
+	WIN32_FIND_DATA ffd;
+	HANDLE hFind;
+
+	std::wcout << L"\nПоиск: " << path + L"\\" + mask << L":\n";
+
+	hFind = FindFirstFile((path + L"\\" + mask).c_str(), &ffd);
 	if (hFind != INVALID_HANDLE_VALUE) {
 		do {
 			if (!wcscmp(ffd.cFileName, L".") || !wcscmp(ffd.cFileName, L".."))
 				continue;
 			findCounter++;
-			std::wstring wsFullPath = getFullPathByName(dirData.path, ffd);
+			std::wstring wsFullPath = path + L"\\" + ffd.cFileName;
 			unsigned long long fileAge = GetFileAgeMs(ffd);
 			bool isFolder = GetFileAttributes(wsFullPath.c_str()) == FILE_ATTRIBUTE_DIRECTORY;
 

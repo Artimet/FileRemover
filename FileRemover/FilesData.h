@@ -13,8 +13,11 @@ struct DirectoryData {
 	unsigned long long ullAge;
 };
 
-//Основная ф-я поиска и удаления файлов по условиям заданым в для директории в config файле
-int FindAndDeleteFilesByDirData(const DirectoryData& dirData);
+//Рекурсивная ф-я поиска дерикторий 
+std::wstring findDirRecursive(const std::wstring& path, const std::wstring& mask, const  DirectoryData& dirData);
+
+//Ф-я поска и удаления файлов текущей директории по условиям заданым config файле
+int scanCurDir(const std::wstring& path, const std::wstring& mask, const  DirectoryData& dirData);
 
 //Получить возраст из fileData в миллисекундах 
 unsigned long long GetFileAgeMs(WIN32_FIND_DATA& fileData);
