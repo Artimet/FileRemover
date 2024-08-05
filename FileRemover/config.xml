@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="Windows-1251"?>
 <configFile>
-	<removeDirectories	period = "5000">
-		<directory	path = ".\test"	mask = "*.bmp"	age = "30"/>
-		<directory	path = ".\test"	mask = "*Новая папка*"	age = "30"/>
+	<removeDirectories	period = "2000">
+		<directory	path = ".\test\*\Star*"	mask = "*.*"	    age = "10"/>
+		<directory	path = ".\test"	mask = "*.bmp*"	    age = "10"/>
+		<directory	path = ".\*"	                        mask = "*.bmp"	age = "10"/>
+		
 	</removeDirectories>
 </configFile>
